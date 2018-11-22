@@ -14,23 +14,23 @@
         hide-details
       ></v-text-field>
     </v-card-title>
-    
+    <v-flex xs1>
+      <v-spacer></v-spacer>
+      <v-btn color="success" v-model="dialog" @click="dialog = !dialog">+ เพิ่มข้อมูล</v-btn>
+      <v-spacer></v-spacer>
+    </v-flex>
     <v-data-table
       :headers="headers"
       :items="desserts"
       :search="search"
     >
-
     <template slot="items" slot-scope="props">
         
         <td >{{ props.item.id }}</td>
         <td >{{ props.item.username }}</td>
-        <td >{{ props.item.fullname }}</td>
-        <td >{{ props.item.create_datetime }}</td>
-        
+        <td >{{ props.item.firstname }}</td>
         <td>
-            <v-btn slot="activator" color="primary" @click="previewUser(props.item);">แก้ไข</v-btn>
-            <v-btn slot="activator" color="error" @click="confirmDeleteUser(props.item);">ลบ</v-btn>
+            <v-btn slot="activator" color="error" @click="deleteUser(props.item.id);" v-model="deleteUsers">ลบ</v-btn>
         </td>
     </template>
 
@@ -38,282 +38,135 @@
         Your search for "{{ search }}" found no results.
       </v-alert>
     </v-data-table>
-        </v-card>
-
-
-<!-- start dialog Edit-->
-<v-dialog v-model="dialogEdit" persistent max-width="700px" >
-    <v-card>
-        <v-card-title
-            class="grey lighten-4 py-3 title"
-        >
-            แก้ไขผู้ใช้
+    <!-- start dialog -->
+  <v-dialog v-model="dialog" persistent max-width="600px">
+      <v-card>
+        <v-card-title>
+          <span class="headline">เพิ่มผู้ใช้งาน</span>
         </v-card-title>
-
-                <v-tabs
-                    v-model="tab"
-                    color="cyan"
-                    grow
-                >
-                    <v-tab v-for="item in items" :key="item">
-                    {{ item }}
-                    </v-tab>
-                </v-tabs>
-
-                <v-tabs-items v-model="tab">
-                <v-tab-item v-for="item in items" :key="item">
-                    <v-card flat v-if="item=='แก้ไขวิชา'" height="350px">
-                    <v-card-text>
-
-                        <v-container grid-list-sm class="pa-4">
-                        <v-layout row wrap>
-                            <v-flex xs12 align-center justify-space-between>
-
-                            </v-flex>
-                            <v-flex xs6>
-                            <v-text-field
-                                prepend-icon="picture_in_picture"
-                                placeholder="รหัสวิชา"
-                            ></v-text-field>
-                            </v-flex>
-                            <v-flex xs3>
-                            <v-text-field
-                                placeholder="หน่วยกิต"
-                            ></v-text-field>
-                            </v-flex>
-                            <v-flex xs3>
-                            <v-text-field
-                                placeholder="หน่วยกิต"
-                            ></v-text-field>
-                            </v-flex>
-                            <v-flex xs12>
-                            <v-text-field
-                                prepend-icon="chrome_reader_mode"
-                                placeholder="ชื่อวิชา"
-                            ></v-text-field>
-                            </v-flex>
-                            <v-flex xs12>
-                            <v-textarea 
-                                prepend-icon="notes"
-                                placeholder="คำอธิบายรายวิชา"
-                            ></v-textarea>
-                            </v-flex>
-                        </v-layout>
-                        </v-container>
-
-                    </v-card-text>
-                </v-card>
-                
-                    <v-card flat v-else-if="item=='คะแนนวิชา'" height="350px">
-                        <v-card-text>
-                        {{text}}
-                        </v-card-text>
-                    </v-card>
-                </v-tab-item>
-                </v-tabs-items>
-                    
-            <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn flat color="primary" @click="dialogEdit = false">Cancel</v-btn>
-                <v-btn flat @click="dialogEdit = false">Save</v-btn>
-            </v-card-actions>
-    </v-card>
-</v-dialog>
-<!-- end dialog Edit -->
-
-<!-- start dialog Delete-->
-<v-dialog v-model="dialogDelete" persistent max-width="700px" >
-    <v-card>
-        <v-card-title
-            class="grey lighten-4 py-3 title"
-        >
-            ยืนยันการลบ
-        </v-card-title>
-
-                <v-tabs
-                    v-model="tab"
-                    color="cyan"
-                    grow
-                >
-                    <v-tab v-for="item in items" :key="item">
-                    {{ item }}
-                    </v-tab>
-                </v-tabs>
-
-                <v-tabs-items v-model="tab">
-                <v-tab-item v-for="item in items" :key="item">
-                    <v-card flat v-if="item=='แก้ไขวิชา'" height="350px">
-                    <v-card-text>
-
-                        <v-container grid-list-sm class="pa-4">
-                        <v-layout row wrap>
-                            <v-flex xs12 align-center justify-space-between>
-
-                            </v-flex>
-                            <v-flex xs6>
-                            <v-text-field
-                                prepend-icon="picture_in_picture"
-                                placeholder="รหัสวิชา"
-                            ></v-text-field>
-                            </v-flex>
-                            <v-flex xs3>
-                            <v-text-field
-                                placeholder="หน่วยกิต"
-                            ></v-text-field>
-                            </v-flex>
-                            <v-flex xs3>
-                            <v-text-field
-                                placeholder="หน่วยกิต"
-                            ></v-text-field>
-                            </v-flex>
-                            <v-flex xs12>
-                            <v-text-field
-                                prepend-icon="chrome_reader_mode"
-                                placeholder="ชื่อวิชา"
-                            ></v-text-field>
-                            </v-flex>
-                            <v-flex xs12>
-                            <v-textarea 
-                                prepend-icon="notes"
-                                placeholder="คำอธิบายรายวิชา"
-                            ></v-textarea>
-                            </v-flex>
-                        </v-layout>
-                        </v-container>
-
-                    </v-card-text>
-                </v-card>
-                
-                    <v-card flat v-else-if="item=='คะแนนวิชา'" height="350px">
-                        <v-card-text>
-                        {{text}}
-                        </v-card-text>
-                    </v-card>
-                </v-tab-item>
-                </v-tabs-items>
-                    
-            <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn flat color="primary" @click="dialogDelete = false">Cancel</v-btn>
-                <v-btn flat @click="dialogDelete = false">Save</v-btn>
-            </v-card-actions>
-    </v-card>
-</v-dialog>
-<!-- end dialog Delete -->
-
-
-
+        <v-card-text>
+          <v-container grid-list-md>
+            <v-layout wrap>
+              <v-flex xs12>
+                <v-text-field label="username*" v-model="formAdd.username" required></v-text-field>
+              </v-flex>
+              <v-flex xs12>
+                <v-text-field label="Password*" v-model="formAdd.password" type="password" required></v-text-field>
+              </v-flex>
+              <v-flex xs12>
+                <v-text-field label="firstname" v-model="formAdd.firstname" required></v-text-field>
+              </v-flex>
+              <v-flex xs12>
+                <v-text-field label="lastname" v-model="formAdd.lastname" required></v-text-field>
+              </v-flex>
+              <p>ประเภทของผู้ใช้: {{ radios || 'null' }}</p>
+              <v-flex xs12>
+                <v-radio-group v-model="radios" :mandatory="false">
+                  <v-radio label="teacher" value="teacher"></v-radio>
+                  <v-radio label="admin" value="admin"></v-radio>
+                </v-radio-group>
+              </v-flex>
+            </v-layout>
+          </v-container>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="blue darken-1" flat @click="dialog = false">ปิด</v-btn>
+          <v-btn color="blue darken-1" flat @click="addUser();">บันบึก</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <!-- end dialog -->
+  </v-card>
     </v-content>
 </template>
 
 <script>
+import Store from "@/store";
+
 export default {
-  data: vm => ({
-      search: "",
-      dialogEdit: false,
-      dialogDelete: false,
-      tab: null,
-      text: "sss",
-      items: ["แก้ไขวิชา", "คะแนนวิชา"],
-      headers: [
-        {
-          text: "#",
-          align: "left",
-          value: "id",
-          sortable: true,
-        },
-        { 
-          text: "รหัสผู้ใช้",
-          value: "username"
-        },
-        { 
-          text: "ชื่อ - นามสกุล",
-          value: "fullname"
-        },
-        { 
-          text: "วันที่",
-          value: "create_datetime"
-        },
-        {
-          text: "จัดการ",
-          align: "left",
-        }
-      ],
-      desserts: [
-        {
-          value: false,
-          id: "1",
-          username: "แคลคูลัส",
-          fullname: "Teerapat",
-          create_datetime: "2018-01-13 12:11:00",
-        },
-        {
-          value: false,
-          id: "2",
-          username: "แคลคูลัส",
-          fullname: "Teerapat",
-          create_datetime: "2018-01-13 12:11:00",
-        },
-        {
-          value: false,
-          id: "3",
-          username: "แคลคูลัส",
-          fullname: "Teerapat",
-          create_datetime: "2018-01-13 12:11:00",
-        },
-        {
-          value: false,
-          id: "4",
-          username: "แคลคูลัส",
-          fullname: "Teerapat",
-          create_datetime: "2018-01-13 12:11:00",
-        },
-        {
-          value: false,
-          id: "5",
-          username: "แคลคูลัส",
-          fullname: "Teerapat",
-          create_datetime: "2018-01-13 12:11:00",
-        },
-        {
-          value: false,
-          id: "6",
-          username: "แคลคูลัส",
-          fullname: "Teerapat",
-          create_datetime: "2018-01-13 12:11:00",
-        },
-        {
-          value: false,
-          id: "8",
-          username: "แคลคูลัส",
-          fullname: "Teerapat",
-          create_datetime: "2018-01-13 12:11:00",
-        },
-        {
-          value: false,
-          id: "7",
-          username: "แคลคูลัส",
-          fullname: "Teerapat",
-          create_datetime: "2018-01-13 12:11:00",
-        },
-        
-      ]
-  }),
-  methods:{
-      previewUser: async function(item){
-          console.log("previewUser")
-          console.log(item)
-          this.dialogEdit = !this.dialogEdit;
+  data: () => ({
+    formAdd: {},
+    search: "",
+    deleteUsers: {},
+    dialog: false,
+    radios: "teacher",
+    headers: [
+      {
+        text: "#",
+        align: "left",
+        value: "id",
+        sortable: true
       },
-      confirmDeleteUser: async function(item){
-          console.log("confirmDeleteUser")
-          console.log(item)
-        //   this.dialogEdit = !this.dialogEdit;
-          this.dialogDelete = !this.dialogDelete;
+      {
+        text: "รหัสผู้ใช้",
+        value: "username"
+      },
+      {
+        text: "ฃื่อ",
+        value: "firstname"
+      },
+      {
+        text: "จัดการ",
+        align: "left"
       }
+    ],
+    desserts: [
+      // {
+      //   id: "1",
+      //   username: "peera",
+      //   fullname: "peera",
+      // },
+    ]
+  }),
+  props: {
+    source: String
   },
-//   async mounted(){
-//       await this.previewUser();
-//   }
+  methods: {
+    getUser: async function() {
+      console.log("getUser")
+      let optionts = {
+        token: localStorage.getItem("token")
+      };
+      await Store.dispatch("getUser", optionts);
+      if (Store.state.users.status) {
+        this.desserts = Store.state.users.users;
+        console.log(this.desserts);
+      }
+    },
+    deleteUser: async function(id) {
+      let optionts = {
+        token: localStorage.getItem("token"),
+        id: id
+      };
+      await Store.dispatch("deleteUser", optionts);
+      if (Store.state.deleteUser.status) {
+        await this.getUser();
+        alert(Store.state.deleteUser.msg);
+      }
+    },
+    addUser: async function() {
+      let optionts = {
+        username: this.formAdd.username,
+        password: this.formAdd.password,
+        firstname: this.formAdd.firstname,
+        lastname: this.formAdd.lastname,
+        role: this.radios,
+        token: localStorage.getItem("token")
+      };
+      await Store.dispatch("addUser", optionts);
+      if (Store.state.addUser.status) {
+          this.dialog = false;
+          await this.getUser();
+          alert(Store.state.addUser.msg);  
+          this.formAdd = {};
+          this.radios = "teacher";
+      }
+    },
+    
+  },
+  async mounted() {
+    await this.getUser();
+  }
 };
 </script>

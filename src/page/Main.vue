@@ -1,6 +1,5 @@
 <template>
     <v-app>
-    <v-container>
     <v-navigation-drawer
       :clipped="$vuetify.breakpoint.lgAndUp"
       v-model="drawer"
@@ -66,7 +65,6 @@
         <v-icon>home</v-icon>
       </v-btn>
     </v-toolbar>
-    </v-container>
 
     <v-container >
       <router-view></router-view>
@@ -79,7 +77,7 @@
     data: () => ({
       dialog: false,
       drawer: true,
-      isAdmin: true,
+      isAdmin: false,
 
       itemsTeacher: [
         { 
@@ -116,12 +114,23 @@
       source: String
     },
     methods: {
-        setMenu: function(){
-            this.items = this.isAdmin ? this.itemsAdmin.concat(this.items): this.itemsTeacher.concat(this.items);
+        setMenu: async function(){
+            let token  = await localStorage.getItem('token')
+            let _dataToken = token.split('.')
+            var decodedString = this.b64DecodeUnicode(_dataToken[0]);
+            let dataToken = JSON.parse(decodedString);
+            this.items = (dataToken.role_id == 2) ? this.itemsAdmin.concat(this.items): this.itemsTeacher.concat(this.items);
+        },
+        b64DecodeUnicode(str) {
+            return decodeURIComponent(Array.prototype.map.call(atob(str), function(c) {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+            }).join(''))
         }
+
+        
     },
-    created() {
-      this.setMenu();
+    async created() {
+      await this.setMenu();
     }
   }
 </script>

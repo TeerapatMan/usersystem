@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 
 import Login from '@/page/login'
+import loginAdmin from '@/page/loginAdmin'
 
 import Home from '@/components/home'
 import Setting from '@/components/setting'
@@ -15,11 +16,23 @@ Vue.use(Router)
 export default new Router({
   mode: 'history',
   base: process.env.BASE_URL,
-  routes: [
-    {
+  routes: [{
       path: '/',
       name: 'login',
       component: Login
+    },
+    {
+      path: '/logout',
+      name: 'logout',
+      beforeEnter: (to, from, next) => {
+        localStorage.clear()
+        next('/')
+      }
+    },
+    {
+      path: '/admin',
+      name: 'loginAdmin',
+      component: loginAdmin
     },
     {
       path: '/main',
@@ -27,8 +40,7 @@ export default new Router({
       components: {
         default: Main,
       },
-      children:[
-        {
+      children: [{
           path: '',
           name: 'home',
           component: Home
