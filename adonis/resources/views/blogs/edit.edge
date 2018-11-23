@@ -1,0 +1,7 @@
+<form action="/blog/edit" method="POST">
+    {{ csrfField() }}
+    <input type="hidden" name="id" value="{{blog.id}}">
+    Title : <input type="text" name="title" value="{{blog.title}}"> <br>
+    Content : <textarea name="content" cols="30" rows="10">{{blog.content}}</textarea> <br>
+    <button type="submit">Edit</button>
+</form>

@@ -1,0 +1,38 @@
+
+<form action="/login" method="POST">
+  {{ csrfField() }}
+  username : <input type="text" name="username"> <br>
+  password : <input type="password" name="password"> <br>
+  <button type="submit">Login</button>
+</form>
+
+@loggedIn
+  
+  {{ auth.user.username }} <br>
+  {{ auth.user.email }} <br>
+  <a href="/logout">Logout</a>
+  <br>
+  
+
+  <a href="/blog/create">New Blog</a>
+
+  @each(blog in blogs)
+    <div>
+        <h1>{{blog.title}}</h1>
+        <p>{{blog.content}}</p>
+
+        <form action="/blog/edit" method="GET">
+          <input type="hidden" name="id" value="{{blog.id}}" />
+          <button type="submit">Edit</button>
+        </form>
+        <form action="/blog/delete" method="POST">
+          {{ csrfField() }}
+          <input type="hidden" name="id" value="{{blog.id}}" />
+          <button type="submit">Delete</button>
+        </form>
+        
+        <hr>
+    </div>
+  @endeach
+
+@endloggedIn
